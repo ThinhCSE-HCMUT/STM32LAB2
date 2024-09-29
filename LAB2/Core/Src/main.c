@@ -58,18 +58,67 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN 0 */
 int timer0_counter = 0;
 int timer0_flag = 0;
+
+int timer1_counter = 0;
+int timer1_flag = 0;
+
+int hour = 15, minute = 8, second = 50;
+int led_buffer[4];
+const int MAX_LED = 4;
+int index_led = 0;
 int TIMER_CYCLE = 10;
+void update7SEG(int index)
+{
+	HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
+	HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
+	HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
+	HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
+	switch(index)
+	{
+	case 0:
+		display7SEG(led_buffer[0]);
+		HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
+		break;
+	case 1:
+		display7SEG(led_buffer[1]);
+		HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
+		break;
+	case 2:
+		display7SEG(led_buffer[2]);
+		HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, RESET);
+		break;
+	case 3:
+		display7SEG(led_buffer[3]);
+		HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, RESET);
+		break;
+	default:
+		break;
+	}
+}
+
 void setTimer0(int duration)
 {
 	timer0_counter = duration / TIMER_CYCLE;
 	timer0_flag = 0;
 }
+
+void setTimer1(int duration)
+{
+	timer1_counter = duration / TIMER_CYCLE;
+	timer1_flag = 0;
+}
+
 void timer_run()
 {
 	if(timer0_counter > 0)
 	{
 		timer0_counter--;
 		if(timer0_counter == 0) timer0_flag = 1;
+	}
+	if(timer1_counter > 0)
+	{
+		timer1_counter--;
+		if(timer1_counter == 0) timer1_flag = 1;
 	}
 }
 /* USER CODE END 0 */
@@ -109,8 +158,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  int hour = 15, minute = 8, second = 50;
-  int led_buffer[4];
+
   void updateClockBuffer()
   {
   	if(hour <= 9)
@@ -135,6 +183,7 @@ int main(void)
   	}
   }
   setTimer0(1000);
+  setTimer1(500);
   while (1)
   {
 //	  second++;
@@ -152,8 +201,8 @@ int main(void)
 //	  {
 //		  hour = 0;
 //	  }
-//	  updateClockBuffer();
-	  if(timer0_flag == 1)
+	  updateClockBuffer();
+	  if(timer0_flag)
 	  {
 		  setTimer0(1000);
 		  HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
@@ -173,6 +222,12 @@ int main(void)
 			  hour = 0;
 		  }
 		  updateClockBuffer();
+	  }
+	  if(timer1_flag)
+	  {
+		  setTimer1(500);
+		  update7SEG(index_led);
+		  index_led = (index_led + 1) % MAX_LED;
 	  }
     /* USER CODE END WHILE */
 
@@ -303,68 +358,9 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-//int count_7seg = 50;
-//int count_led = 100;
-//const int MAX_LED = 4;
-//int index_led = 0;
 
-//void update7SEG(int index)
-//{
-//	switch(index)
-//	{
-//	case 0:
-//		display7SEG(led_buffer[0]);
-//		HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
-//		HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-//		HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
-//		HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-//		break;
-//	case 1:
-//		display7SEG(led_buffer[1]);
-//		HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
-//		HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-//		HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
-//		HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-//		break;
-//	case 2:
-//		display7SEG(led_buffer[2]);
-//		HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, RESET);
-//		HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-//		HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, SET);
-//		HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-//		break;
-//	case 3:
-//		display7SEG(led_buffer[3]);
-//		HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, RESET);
-//		HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-//		HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, SET);
-//		HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-//		break;
-//	default:
-//		break;
-//	}
-//}
-//This is Ex4
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-//	if(htim->Instance == TIM2)
-//	{
-//		if(count_7seg > 0)
-//		{
-//			if(--count_7seg <= 0)
-//			{
-//				count_7seg = COUNT_7SEG_INIT;
-//				update7SEG(index_led);
-//				index_led = (index_led + 1) % MAX_LED;
-//
-//			}
-//			if(--count_led <= 0)
-//			{
-//				count_led = COUNT_LED_INIT;
-//				HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
-//			}
-//		}
-//	}
 	timer_run();
 }
 /* USER CODE END 4 */
