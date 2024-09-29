@@ -269,6 +269,7 @@ void update7SEG(int index)
 		break;
 	}
 }
+//This is Ex4
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if(htim->Instance == TIM2)
@@ -288,7 +289,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
 			}
 		}
-
 	}
 }
 /* USER CODE END 4 */

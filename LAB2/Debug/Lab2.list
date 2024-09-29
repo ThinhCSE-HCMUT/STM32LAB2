@@ -997,6 +997,7 @@ void update7SEG(int index)
  8000758:	40010800 	.word	0x40010800
 
 0800075c <HAL_TIM_PeriodElapsedCallback>:
+//This is Ex4
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
  800075c:	b580      	push	{r7, lr}
@@ -1068,7 +1069,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80007ca:	f000 fbc9 	bl	8000f60 <HAL_GPIO_TogglePin>
 			}
 		}
-
 	}
 }
  80007ce:	bf00      	nop
