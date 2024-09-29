@@ -7,43 +7,6 @@
 
 #include "led7seg1.h"
 
-//
-//int timer1_counter = 0;
-//int timer1_flag = 0;
-//int led_state = 0;
-//
-//void setTimer1(int duration){
-//	timer1_counter = duration;
-//	timer1_flag = 0;
-//	led_state = 0;
-//}
-//
-//void timerRun(){
-//	if(timer1_counter > 0)
-//	{
-//		timer1_counter--;
-//		if(timer1_counter <= 0) timer1_flag = 1;
-//	}
-//	if(timer1_flag)
-//	{
-//		setTimer1(50);
-//		if(led_state == 0)
-//		{
-//			display7SEG(1);
-//			HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, RESET);
-//			HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, SET);
-//			led_state = 1;
-//		}
-//		else
-//		{
-//			display7SEG(2);
-//			HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, RESET);
-//			HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
-//			led_state = 0;
-//		}
-//	}
-//}
-
 void display7SEG(int num)
 {
 	switch(num)

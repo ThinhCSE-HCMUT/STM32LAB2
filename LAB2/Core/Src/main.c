@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "led7seg1.h"
+#include "timer.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,17 +57,11 @@ static void MX_GPIO_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-int timer0_counter = 0;
-int timer0_flag = 0;
-
-int timer1_counter = 0;
-int timer1_flag = 0;
-
 int hour = 15, minute = 8, second = 50;
 int led_buffer[4];
 const int MAX_LED = 4;
 int index_led = 0;
-int TIMER_CYCLE = 10;
+
 void update7SEG(int index)
 {
 	HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, SET);
@@ -96,31 +91,6 @@ void update7SEG(int index)
 	}
 }
 
-void setTimer0(int duration)
-{
-	timer0_counter = duration / TIMER_CYCLE;
-	timer0_flag = 0;
-}
-
-void setTimer1(int duration)
-{
-	timer1_counter = duration / TIMER_CYCLE;
-	timer1_flag = 0;
-}
-
-void timer_run()
-{
-	if(timer0_counter > 0)
-	{
-		timer0_counter--;
-		if(timer0_counter == 0) timer0_flag = 1;
-	}
-	if(timer1_counter > 0)
-	{
-		timer1_counter--;
-		if(timer1_counter == 0) timer1_flag = 1;
-	}
-}
 /* USER CODE END 0 */
 
 /**
@@ -182,29 +152,14 @@ int main(void)
   		led_buffer[3] = minute % 10;
   	}
   }
-  setTimer0(1000);
-  setTimer1(500);
+  setTimer0(COUNT_LED_INIT);
+  setTimer1(COUNT_7SEG_INIT);
   while (1)
   {
-//	  second++;
-//	  if(second >= 60)
-//	  {
-//		  second = 0;
-//		  minute++;
-//	  }
-//	  if(minute >= 60)
-//	  {
-//		  minute = 0;
-//		  hour++;
-//	  }
-//	  if(hour >= 24)
-//	  {
-//		  hour = 0;
-//	  }
 	  updateClockBuffer();
 	  if(timer0_flag)
 	  {
-		  setTimer0(1000);
+		  setTimer0(COUNT_LED_INIT);
 		  HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
 		  second++;
 		  if(second >= 60)
@@ -225,7 +180,7 @@ int main(void)
 	  }
 	  if(timer1_flag)
 	  {
-		  setTimer1(500);
+		  setTimer1(COUNT_7SEG_INIT);
 		  update7SEG(index_led);
 		  index_led = (index_led + 1) % MAX_LED;
 	  }
