@@ -8,8 +8,7 @@
 #ifndef INC_LED7SEG1_H_
 #define INC_LED7SEG1_H_
 
-#define COUNT_7SEG_INIT 500
-#define COUNT_LED_INIT 1000
+
 #include "main.h"
 
 void display7SEG(int num);
